@@ -1206,6 +1206,7 @@ __metadata:
     react-dom: "npm:^18.3.1"
     react-modal: "npm:^3.16.1"
     react-router-dom: "npm:^6.24.0"
+    sweetalert2: "npm:^11.12.0"
     vite: "npm:^5.3.1"
   languageName: unknown
   linkType: soft
@@ -3919,6 +3920,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 10c0/6c4032340701a9950865f7ae8ef38578d8d7053f5e10518076e6554a9381fa91bd9c6850193695c141f32b21f979c985db07265a758867bac95de05f7d8aeb39
+  languageName: node
+  linkType: hard
+
+"sweetalert2@npm:^11.12.0":
+  version: 11.12.0
+  resolution: "sweetalert2@npm:11.12.0"
+  checksum: 10c0/4243cbfd5b37e3865a460bda9166e7797f1ecd3da6e8ef54f6515631e32fb9146802b825e1a36d01f6a572fdbcb4aaa2c94bfc7763cb4d523e4c6c47acfc50e2
   languageName: node
   linkType: hard
 
