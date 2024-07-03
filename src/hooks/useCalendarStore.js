@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { onAddNewEvent, onDeleteEvent, onSetActiveEvent, onUpdateEvent } from '../store';
+import { onAddNewEvent, onDeleteEvent, onLoadEvents, onSetActiveEvent, onUpdateEvent } from '../store';
 import { calendarApi } from '../api';
 import { convertEventsDateEvents } from '../helpers';
 
@@ -24,7 +24,7 @@ export const useCalendarStore = () => {
       // Creando
       const { data } = await calendarApi.post('/events', calendarEvent );
 
-      dispatch( onAddNewEvent({ ...calendarEvent, id: data.event.id }) );
+      dispatch( onAddNewEvent({ ...calendarEvent, id: data.event.id, user }) );
     }
   };
 
@@ -41,7 +41,8 @@ export const useCalendarStore = () => {
     try {
       const { data } = await calendarApi.get('/events');
       const events = convertEventsDateEvents( data.events );
-      console.log(events);
+
+      dispatch( onLoadEvents( events ) );
       
     } catch ( error ) {
       console.log( 'Error cargando eventos' );
