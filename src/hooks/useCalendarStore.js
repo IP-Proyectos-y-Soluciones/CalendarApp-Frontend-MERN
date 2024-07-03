@@ -40,7 +40,7 @@ export const useCalendarStore = () => {
   };
 
   const startDeletingEvent = async() => {
-    // TODO: Llegar al backend
+    
     try {
       await calendarApi.delete(`/events/${ activeEvent.id }`);
 
