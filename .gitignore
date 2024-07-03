@@ -25,3 +25,4 @@ dist-ssr
 .yarn
 .pnp.cjs
 .pnp.loader.mjs
+.env
