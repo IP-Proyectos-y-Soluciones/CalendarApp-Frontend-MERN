@@ -26,3 +26,5 @@ dist-ssr
 .pnp.cjs
 .pnp.loader.mjs
 .env
+.env.production
+.env.test
