@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { calendarApi } from '../../src/api';
 import { useAuthStore } from '../../src/hooks';
 import { authSlice } from '../../src/store';
-import { initialState, notAuthenticatedState } from '../fixtures/authStates';
+import { authenticatedState, initialState, notAuthenticatedState } from '../fixtures/authStates';
 import { testUserCredentials } from '../fixtures/testUser';
 
 
@@ -194,5 +194,27 @@ describe('Pruebas en useAuthStore', () => {
         uid: '668630bc68c99e279a4400f1', 
       }, 
     });
+  });
+
+  test('startLoguot debe de ejecutarse correctamente', () => {
+    
+    const mockStore = getMockStore({ ...authenticatedState });
+    const { result } = renderHook(() => useAuthStore(), {
+      wrapper: ({ children }) => <Provider store={ mockStore }>{ children }</Provider>
+    });
+
+    act( () => {
+      result.current.startLogout();
+    });
+
+    const { status, user, errorMessage } = result.current;
+
+    expect({ status, user, errorMessage }).toEqual({ 
+      status: 'not-authenticated', 
+      user: {}, 
+      errorMessage: undefined 
+    });
+    expect( localStorage.getItem( 'token' ) ).toBeNull();
+    expect( localStorage.getItem( 'token-init-date') ).toBeNull();
   });
 });
