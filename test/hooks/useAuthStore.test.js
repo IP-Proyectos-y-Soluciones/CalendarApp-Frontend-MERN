@@ -28,7 +28,6 @@ describe('Pruebas en useAuthStore', () => {
   test('Debe de regresar los valores por defecto', () => {
 
     const mockStore = getMockStore({ ...initialState });
-
     const { result } = renderHook( () => useAuthStore(), {
       wrapper: ({ children }) => <Provider store={ mockStore } >{ children }</Provider>
     });
@@ -47,7 +46,6 @@ describe('Pruebas en useAuthStore', () => {
   test('startLogin debe de realizar el login correctamente', async() => {
     
     const mockStore = getMockStore({ ...notAuthenticatedState });
-
     const { result } = renderHook( () => useAuthStore(), {
       wrapper: ({ children }) => <Provider store={ mockStore } >{ children }</Provider>
     });
@@ -60,7 +58,12 @@ describe('Pruebas en useAuthStore', () => {
     expect({ errorMessage, status, user }).toEqual({
       errorMessage: undefined,
       status: 'authenticated',
-      user: { name: 'Test User', uid: '668630bc68c99e279a4400f1' }
+      user: { 
+        name: 'Test User', 
+        uid: '668630bc68c99e279a4400f1',
+
+      },
+
     });
 
     expect( localStorage.getItem( 'token' ) ).toEqual( expect.any( String ) );
@@ -70,7 +73,6 @@ describe('Pruebas en useAuthStore', () => {
   test('startLogin debe de fallar la autenticación', async() => {
     
     const mockStore = getMockStore({ ...notAuthenticatedState });
-
     const { result } = renderHook( () => useAuthStore(), {
       wrapper: ({ children }) => <Provider store={ mockStore } >{ children }</Provider>
     });
@@ -95,8 +97,8 @@ describe('Pruebas en useAuthStore', () => {
   test('startRegister debe de crear un usuario', async() => {
 
     const newUser = { email: 'test2@google.com', password: '123456789', name: 'Test User 2' };
-    const mockStore = getMockStore({ ...notAuthenticatedState });
 
+    const mockStore = getMockStore({ ...notAuthenticatedState });
     const { result } = renderHook( () => useAuthStore(), {
       wrapper: ({ children }) => <Provider store={ mockStore } >{ children }</Provider>
     });
@@ -119,7 +121,10 @@ describe('Pruebas en useAuthStore', () => {
     expect({ errorMessage, status, user }).toEqual({
       errorMessage: undefined,
       status: 'authenticated',
-      user: { name: 'Test User', uid: '1263781293' }
+      user: { 
+        name: 'Test User', 
+        uid: '1263781293', 
+      },
     });
     
     spy.mockRestore();
@@ -128,7 +133,6 @@ describe('Pruebas en useAuthStore', () => {
   test('startRegister debe de fallar la creación', async() => {
     
     const mockStore = getMockStore({ ...notAuthenticatedState });
-
     const { result } = renderHook( () => useAuthStore(), {
       wrapper: ({ children }) => <Provider store={ mockStore } >{ children }</Provider>
     });
@@ -143,6 +147,52 @@ describe('Pruebas en useAuthStore', () => {
       errorMessage: 'User already exists',
       status: 'not-authenticated',
       user: {},
+    });
+  });
+
+  test('checkAuthToken debe de fallar si no hay token', async() => {
+    
+    const mockStore = getMockStore({ ...initialState });
+    const { result } = renderHook( () => useAuthStore(), {
+      wrapper: ({ children }) => <Provider store={ mockStore } >{ children }</Provider>
+    });
+
+    await act( async() => {
+      await result.current.checkAuthToken()
+    });
+
+    const { errorMessage, status, user } = result.current;
+
+    expect({ errorMessage, status, user }).toEqual({ 
+      errorMessage: undefined, 
+      status: 'not-authenticated', 
+      user: {} 
+    });
+  });
+
+  test('checkAuthToken debe de autenticar el usuario si hay un token', async() => {
+    
+    const { data } = await calendarApi.post('/auth', testUserCredentials );
+    localStorage.setItem( 'token', data.token );
+
+    const mockStore = getMockStore({ ...initialState });
+    const { result } = renderHook( () => useAuthStore(), {
+      wrapper: ({ children }) => <Provider store={ mockStore } >{ children }</Provider>
+    });
+
+    await act( async() => {
+      await result.current.checkAuthToken()
+    });
+
+    const { errorMessage, status, user } = result.current;
+
+    expect({ errorMessage, status, user }).toEqual({ 
+      errorMessage: undefined, 
+      status: 'authenticated', 
+      user: { 
+        name: 'Test User', 
+        uid: '668630bc68c99e279a4400f1', 
+      }, 
     });
   });
 });
