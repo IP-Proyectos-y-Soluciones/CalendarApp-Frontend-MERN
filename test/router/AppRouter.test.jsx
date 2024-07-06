@@ -1,9 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { CalendarPage } from '../../src/calendar';
 import { AppRouter } from '../../src/router/AppRouter';
 import { useAuthStore } from '../../src/hooks';
 
 jest.mock( '../../src/hooks/useAuthStore' );
+
+jest.mock( '../../src/calendar', () => ({
+  CalendarPage: () => <h1>CalendarPage</h1>
+}));
 
 describe('Pruebas en <AppRouter />', () => {
 
@@ -21,5 +27,38 @@ describe('Pruebas en <AppRouter />', () => {
     render( <AppRouter /> );
     expect( screen.getByText( 'Cargando...' ) ).toBeTruthy();
     expect( mockCheckAuthToken ).toHaveBeenCalled();
+  });
+
+  test('Debe de mostrar el login en caso de no estar autenticado', () => {
+    
+    useAuthStore.mockReturnValue({
+      status: 'not-authenticated',
+      checkAuthToken: mockCheckAuthToken
+    });
+    
+    const { container } = render( 
+      <MemoryRouter initialEntries={['/auth2/algo/otracosa']}>
+        <AppRouter /> 
+      </MemoryRouter>
+    );
+
+    expect( screen.getByText( 'Ingreso' ) ).toBeTruthy();
+    expect( container ).toMatchSnapshot();
+  });
+
+  test('Debe de mostrar el calendario si estamos autenticados', () => {
+    
+    useAuthStore.mockReturnValue({
+      status: 'authenticated',
+      checkAuthToken: mockCheckAuthToken
+    });
+    
+    render( 
+      <MemoryRouter>
+        <AppRouter /> 
+      </MemoryRouter>
+    );
+
+    expect( screen.getByText( 'CalendarPage' ) ).toBeTruthy();
   });
 });
