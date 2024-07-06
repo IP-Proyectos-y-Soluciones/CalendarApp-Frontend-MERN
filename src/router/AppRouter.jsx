@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { LoginPage } from '../auth';
@@ -12,7 +12,6 @@ export const AppRouter = () => {
 
   useEffect(() => {
     checkAuthToken();
-
   }, []);
 
   if ( status === 'checking' ) {
